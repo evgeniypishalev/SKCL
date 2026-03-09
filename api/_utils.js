@@ -67,8 +67,8 @@ export async function auditLog(decodedUser, action, details) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         content: publicMsg,
-                        username: "LIST UPDATES",
-                        avatar_url: "https://thepisslist.com/list_icon.png"
+                        username: "SKCL Changelog",
+                        avatar_url: "https://skcl.vercel.app/list_icon.png"
                     })
                 });
             } catch (e) { console.error("Updates webhook failed!", e); }
@@ -116,8 +116,8 @@ export async function auditLog(decodedUser, action, details) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         content: finalContent,
-                        username: "TPL Completion Updates",
-                        avatar_url: "https://thepisslist.com/list_icon.png"
+                        username: "SKCL Completion Updates",
+                        avatar_url: "https://skcl.vercel.app/list_icon.png"
                     })
                 });
             }
@@ -296,13 +296,13 @@ export async function auditLog(decodedUser, action, details) {
     }
 
     const payloadJson = {
-        username: "TPL Staff Logging",
-        avatar_url: "https://thepisslist.com/list_icon.png",
+        username: "skcl staff parasha",
+        avatar_url: "https://skcl.vercel.app/list_icon.png",
         embeds: [{
             title: displayTitle,
             color: embedColor,
             fields: displayFields,
-            footer: { text: `TPL Audit Logs • ${timestamp} UTC` }
+            footer: { text: `SKCL Audit Logs • ${timestamp} UTC` }
         }]
     };
 
