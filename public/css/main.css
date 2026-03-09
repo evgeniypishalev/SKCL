@@ -1,31 +1,33 @@
 :root {
-    /* Forced Dark Scheme */
-    color-scheme: dark;
+  /* Forced Dark Scheme */
+  color-scheme: dark;
 
-    --color-background: #0f0f0f;
-    --color-on-background: #f0f0f0;
-    --color-background-hover: #1a1a1a;
-    --color-on-background-hover: #f0f0f0;
+  --color-background: #0f0f0f;
+  --color-on-background: #f0f0f0;
+  --color-background-hover: #1a1a1a;
+  --color-on-background-hover: #f0f0f0;
 
-    --color-primary: #d4c217;
-    --color-primary-level: #fff389;
-    --color-primary-light: #2a2815;
-    --color-primary-hover: #e8d80a;
-    --color-primary-disabled: #1f213c;
-    --color-on-primary: #1a1a1a;
+  /* Измененные цвета на Красный */
+  --color-primary: #de0000;      /* Основной красный (шапка, кнопки) */
+  --color-primary-level: #ff6666;   /* Светло-красный для уровней */
+  --color-primary-light: #2a1515;   /* Темно-красный фон для элементов */
+  --color-primary-hover: #ff2b2b;   /* Яркий красный при наведении */
+  --color-primary-disabled: #3c1f1f;
+  --color-on-primary: #ffffff;    /* Цвет текста на красном фоне (белый) */
 
-    --color-error: #de0000;
-    --color-on-error: white;
+  --color-error: #de0000;
+  --color-on-error: white;
 
-    --color-border: #2a2a2a39;
-    --color-text-secondary: #999;
-    --color-text-plus: #efffdf;
-    --color-text-minus: #ffdfdf;
-    --color-text-legacy: #ff822f;
-    --color-text-level-warning: #cc22009f;
-    --color-text-version: #efffdf5c;
-    --color-text-highlight: #fff;
+  --color-border: #2a2a2a39;
+  --color-text-secondary: #999;
+  --color-text-plus: #efffdf;
+  --color-text-minus: #ffdfdf;
+  --color-text-legacy: #ff822f;
+  --color-text-level-warning: #cc22009f;
+  --color-text-version: #efffdf5c;
+  --color-text-highlight: #fff;
 }
+
 
 /* Removed light mode cus it had no use for the TPL (my eyes were killed before) */
 
