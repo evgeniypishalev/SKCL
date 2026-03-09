@@ -93,7 +93,7 @@ export default {
                     </table>
                 </div>
                 <div v-else class="level" style="height: 100%; justify-content: center; align-items: center;">
-                    <p>Uh Oh! It seems there's an error loading the level :/ Please contact Antiroom (Developer) to fix it.</p>
+                    <p>Uh Oh! It seems there's an error loading the level :/ Please contact ad3usgmd (Owner) to fix it.</p>
                 </div>
             </div>
             
@@ -124,7 +124,7 @@ export default {
                     <div v-if="rules && rules.level_rules">
                         <div class="rule-text" v-for="(rule, index) in rules.level_rules" :key="'lvl-'+index" v-html="parseRule(rule)"></div>
                     </div>
-                    <p v-else-if="rulesError" class="error">Uh oh! Failed to load the level submission rules :/ Please contact Antiroom (Developer) to fix it.</p>
+                    <p v-else-if="rulesError" class="error">Uh oh! Failed to load the level submission rules :/ Please contact ad3usgmd (Owner) to fix it.</p>
                     <p v-else>Loading rules...</p>
 
                     <p></p>
@@ -132,7 +132,7 @@ export default {
                     <div v-if="rules && rules.record_rules">
                         <div class="rule-text" v-for="(rule, index) in rules.record_rules" :key="'rec-'+index" v-html="parseRule(rule)"></div>
                     </div>
-                    <p v-else-if="rulesError" class="error">Uh oh! Failed to load the record submission rules :/ Please contact Antiroom (Developer) to fix it.</p>
+                    <p v-else-if="rulesError" class="error">Uh oh! Failed to load the record submission rules :/ Please contact ad3usgmd (Owner) to fix it.</p>
                     <p v-else>Loading rules...</p>
                     </div>
             </div>
