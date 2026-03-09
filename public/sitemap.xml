@@ -1,34 +1,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
-      <loc>https://thepisslist.com/#/</loc>
+      <loc>https://skc.vercel.app/#/</loc>
       <priority>1.0</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/</loc>
+      <loc>https://skc.vercel.app/</loc>
       <priority>1.0</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com</loc>
+      <loc>https://skc.vercel.app</loc>
       <priority>1.0</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/leaderboard</loc>
+      <loc>https://skc.vercel.app/leaderboard</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/packs</loc>
+      <loc>https://skc.vercel.app/packs</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/roulette</loc>
+      <loc>https://skc.vercel.app/roulette</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/admin</loc>
+      <loc>https://skc.vercel.app/admin</loc>
       <priority>0.5</priority>
    </url>
    <url>
-      <loc>https://thepisslist.com/manage</loc>
+      <loc>https://skc.vercel.app/manage</loc>
       <priority>0.5</priority>
    </url>
 </urlset>
