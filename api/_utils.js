@@ -68,7 +68,7 @@ export async function auditLog(decodedUser, action, details) {
                     body: JSON.stringify({ 
                         content: publicMsg,
                         username: "SKCL Changelog",
-                        avatar_url: "https://skcl.vercel.app/list_icon.png"
+                        avatar_url: "https://skcl.vercel.app/list_icon.png?v=3"
                     })
                 });
             } catch (e) { console.error("Updates webhook failed!", e); }
@@ -297,7 +297,7 @@ export async function auditLog(decodedUser, action, details) {
 
     const payloadJson = {
         username: "skcl staff parasha",
-        avatar_url: "https://skcl.vercel.app/list_icon.png",
+        avatar_url: "https://skcl.vercel.app/list_icon.png?v=2",
         embeds: [{
             title: displayTitle,
             color: embedColor,
