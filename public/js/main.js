@@ -19,10 +19,10 @@ router.beforeEach((to, from, next) => {
     let title = "Sakupen Circles List";
 
     // Change title based on route
-    if (to.path === '/leaderboard') title = "Leaderboard | TPL";
-    else if (to.path === '/roulette') title = "Roulette | TPL";
-    else if (to.path === '/admin') title = "Admin Panel | TPL";
-    else if (to.path === '/manage') title = "Management Panel | TPL";
+    if (to.path === '/leaderboard') title = "Leaderboard | SKCL";
+    else if (to.path === '/roulette') title = "Roulette | SKCL";
+    else if (to.path === '/admin') title = "Admin Panel | SKCL";
+    else if (to.path === '/manage') title = "Management Panel | SKCL";
 
     document.title = title;
     next();
