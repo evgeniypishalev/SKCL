@@ -67,7 +67,7 @@ export default {
                         </li>
                         <li>
                             <div class="type-title-sm">FPS</div>
-                            <p>{{ level.fps || 'Any' }}</p>
+                            <p>{{ level.hz || 'Any' }}</p>
                         </li>
                     </ul>
                     <h2>Records</h2>
