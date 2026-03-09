@@ -16,7 +16,7 @@ const router = VueRouter.createRouter({
 
 
 router.beforeEach((to, from, next) => {
-    let title = "The Piss List";
+    let title = "Sakupen Circles List";
 
     // Change title based on route
     if (to.path === '/leaderboard') title = "Leaderboard | TPL";
