@@ -66,8 +66,8 @@ export default {
                             <p>{{ level.id }}</p>
                         </li>
                         <li>
-                            <div class="type-title-sm">Password</div>
-                            <p>{{ level.password || 'Free to Copy' }}</p>
+                            <div class="type-title-sm">FPS</div>
+                            <p>{{ level.fps || 'Any' }}</p>
                         </li>
                     </ul>
                     <h2>Records</h2>
@@ -86,8 +86,8 @@ export default {
                             <td class="mobile">
                                 <img v-if="record.mobile" :src="\`/assets/phone-landscape\${store.dark ? '-dark' : ''}.svg\`" alt="Mobile">
                             </td>
-                            <td class="hz">
-                                <p>{{ record.hz }}Hz</p>
+                            <td class="FPS">
+                                <p>{{ record.hz }}FPS</p>
                             </td>
                         </tr>
                     </table>
