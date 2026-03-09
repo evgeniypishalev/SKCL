@@ -2,22 +2,6 @@
 <html lang="en">
 
 <head>
-    <script>
-        // Auto redirects for users who open the site from our old vercel link :)
-        (function () {
-            const host = window.location.hostname;
-
-            // excludes testing through localhost etc
-            const isLocalhost = host === 'localhost' || host === '127.0.0.1';
-            const isLocalNetwork = host.startsWith('192.168.');
-            const isCorrectDomain = host.endsWith('thepisslist.com');
-
-            // redirects to the new domain if on the old page
-            if (!isLocalhost && !isLocalNetwork && !isCorrectDomain) {
-                window.location.replace('https://thepisslist.com' + window.location.pathname + window.location.search);
-            }
-        })();
-    </script>
     <!-- THIS IS A FORK OF THE TSL!!!!-->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
