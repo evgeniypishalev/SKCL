@@ -138,6 +138,10 @@ input[type="checkbox"] {
     position: relative;
 }
 
+.rule-text strong {
+    color: var(--color-text-highlight);
+}
+
 /* Стили для правил с красными точками */
 .custom-rules-list {
   padding: 0;
@@ -162,8 +166,4 @@ input[type="checkbox"] {
   left: 0;
   font-size: 1.2rem;
   line-height: 1;
-}
-
-.rule-text strong {
-    color: var(--color-text-highlight);
 }
