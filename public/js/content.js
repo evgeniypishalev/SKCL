@@ -1,86 +1,105 @@
 import { round, score } from './score.js';
 
 export async function fetchList() {
- try {
-  const response = await fetch('/api/levels');
-  if (!response.ok) throw new Error(`API Error ${response.status}`);
-  const list = await response.json();
-  return list.map((level) => [{
-   ...level,
-   type: level.type || 'main',
-   records: (level.records || []).sort((a, b) => b.percent - a.percent),
-   _id: level._id || level.id,
-  }, null]);
- } catch (err) { return null; }
+  try {
+    const response = await fetch('/api/levels');
+    if (!response.ok) throw new Error(`API Error ${response.status}`);
+    const list = await response.json();
+    return list.map((level) => [{
+      ...level,
+      type: level.type || 'main',
+      records: (level.records || []).sort((a, b) => b.percent - a.percent),
+      _id: level._id || level.id,
+    }, null]);
+  } catch (err) {
+    console.error("Fetch List Error:", err);
+    return null;
+  }
 }
 
 export async function fetchEditors() {
- try {
-  const response = await fetch('/api/editors');
-  if (!response.ok) return [];
-  return await response.json();
- } catch (e) { return []; }
+  try {
+    const response = await fetch('/api/editors');
+    if (!response.ok) return [];
+    return await response.json();
+  } catch (e) { return []; }
 }
 
 export async function fetchRules() {
- try {
-  const response = await fetch('/api/rules');
-  if (!response.ok) return { level_rules: [], record_rules: [] };
-  const data = await response.json();
-  return data.rules;
- } catch (e) { return { level_rules: [], record_rules: [] }; }
+  try {
+    const response = await fetch('/api/rules');
+    if (!response.ok) return { level_rules: [], record_rules: [] };
+    const data = await response.json();
+    return data.rules || { level_rules: [], record_rules: [] };
+  } catch (e) { return { level_rules: [], record_rules: [] }; }
 }
 
 export async function fetchPacks() {
- try {
-  const response = await fetch('/api/packs');
-  if (!response.ok) return [];
-  return await response.json();
- } catch (e) { return []; }
+  try {
+    const response = await fetch('/api/packs');
+    if (!response.ok) return [];
+    return await response.json();
+  } catch (e) { return []; }
 }
 
 export async function fetchLeaderboard() {
- const listData = await fetchList();
- if (!listData) return [null, ["Failed to load list"]];
+  const listData = await fetchList();
+  if (!listData) return [null, ["Failed to load list"]];
 
- const scoreMap = {};
- // Разделяем списки для честного обсчета рангов
- const ddlLevels = listData.filter(l => l[0].type === 'main');
- const dclLevels = listData.filter(l => l[0].type === 'challenge');
+  const scoreMap = {};
+  // Разделяем списки, чтобы топ-1 демон и топ-1 челлендж давали максимум поинтов
+  const ddlLevels = listData.filter(l => l[0] && l[0].type === 'main');
+  const dclLevels = listData.filter(l => l[0] && l[0].type === 'challenge');
 
- const processList = (levels) => {
-  levels.forEach(([level], index) => {
-   const rank = index + 1; // Ранг внутри СВОЕЙ категории
-   const points = score(rank, 100, level.percentToQualify);
+  const processList = (levels) => {
+    levels.forEach(([level], index) => {
+      const rank = index + 1; // Ранг внутри СВОЕЙ категории
+      const points = score(rank, 100, level.percentToQualify || 100);
 
-   const initUser = (u) => {
-    if (!u) return null;
-    scoreMap[u] ??= { verified: [], completed: [], progressed: [], packs: [], total: 0 };
-    return u;
-   };
+      const initUser = (u) => {
+        if (!u) return null;
+        const name = u.trim();
+        if (!name) return null;
+        scoreMap[name] ??= { verified: [], completed: [], progressed: [], packs: [], total: 0 };
+        return name;
+      };
 
-   if (level.verifier) {
-    const v = initUser(level.verifier);
-    if (v) scoreMap[v].verified.push({ rank, level: level.name, score: points });
-   }
+      if (level.verifier) {
+        const v = initUser(level.verifier);
+        if (v) scoreMap[v].verified.push({ rank, level: level.name, score: points });
+      }
 
-   (level.records || []).forEach(record => {
-    const u = initUser(record.user);
-    if (!u) return;
-    const s = record.percent === 100 ? points : score(rank, record.percent, level.percentToQualify);
-    if (record.percent === 100) scoreMap[u].completed.push({ rank, level: level.name, score: s });
-    else scoreMap[u].progressed.push({ rank, level: level.name, score: s, percent: record.percent });
-   });
+      (level.records || []).forEach(record => {
+        const u = initUser(record.user);
+        if (!u) return;
+        const s = record.percent === 100 ? points : score(rank, record.percent, level.percentToQualify || 100);
+        if (record.percent === 100) {
+          scoreMap[u].completed.push({ rank, level: level.name, score: s });
+        } else {
+          scoreMap[u].progressed.push({ rank, level: level.name, score: s, percent: record.percent });
+        }
+      });
+    });
+  };
+
+  processList(ddlLevels);
+  processList(dclLevels);
+
+  // Финальный расчет Total для каждого игрока
+  const res = Object.entries(scoreMap).map(([user, data]) => {
+    const verifiedScore = data.verified.reduce((a, b) => a + b.score, 0);
+    const completedScore = data.completed.reduce((a, b) => a + b.score, 0);
+    const progressedScore = data.progressed.reduce((a, b) => a + b.score, 0);
+    
+    const total = verifiedScore + completedScore + progressedScore;
+
+    return { 
+      user, 
+      total: round(total), 
+      ...data 
+    };
   });
- };
 
- processList(ddlLevels);
- processList(dclLevels);
-
- const res = Object.entries(scoreMap).map(([user, data]) => {
-  const total = [...data.verified, ...data.completed, ...data.progressed].reduce((a, b) => a + b.score, 0);
-  return { user, total: round(total), ...data };
- });
-
- return [res.sort((a, b) => b.total - a.total), []];
+  // Сортируем по убыванию очков
+  return [res.sort((a, b) => b.total - a.total), []];
 }
