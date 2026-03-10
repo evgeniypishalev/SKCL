@@ -3,7 +3,7 @@ import { round, score } from './score.js';
 export async function fetchList() {
  try {
   const response = await fetch('/api/levels');
-  if (!response.ok) throw new Error(`API Error \${response.status}`);
+  if (!response.ok) throw new Error(`API Error ${response.status}`);
   const list = await response.json();
   return list.map((level) => [{
    ...level,
@@ -15,16 +15,28 @@ export async function fetchList() {
 }
 
 export async function fetchEditors() {
+ try {
   const response = await fetch('/api/editors');
   if (!response.ok) return [];
   return await response.json();
+ } catch (e) { return []; }
 }
 
 export async function fetchRules() {
+ try {
   const response = await fetch('/api/rules');
-  if (!response.ok) return null;
+  if (!response.ok) return { level_rules: [], record_rules: [] };
   const data = await response.json();
   return data.rules;
+ } catch (e) { return { level_rules: [], record_rules: [] }; }
+}
+
+export async function fetchPacks() {
+ try {
+  const response = await fetch('/api/packs');
+  if (!response.ok) return [];
+  return await response.json();
+ } catch (e) { return []; }
 }
 
 export async function fetchLeaderboard() {
@@ -38,7 +50,7 @@ export async function fetchLeaderboard() {
 
  const processList = (levels) => {
   levels.forEach(([level], index) => {
-   const rank = index + 1; // Позиция ВНУТРИ своей вкладки
+   const rank = index + 1; // Ранг внутри СВОЕЙ категории
    const points = score(rank, 100, level.percentToQualify);
 
    const initUser = (u) => {
