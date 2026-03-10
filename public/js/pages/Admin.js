@@ -210,7 +210,7 @@ export default {
       formData: { 
         id: null, name: '', author: '', verifier: '', verification: '', 
         percentToQualify: 100, password: 'free Copyable', records: [], creators: [], placement: null,
-        type: 'main', status: 'Unreleased', note: '', best_record: { percent: 0, player: '' }
+        type: 'main', status: 'Unreleased', note: '', best_record_text: '', player: ''
       },
       showRecords: false, isSubmitting: false, successMessage: '', errorMessage: '',
       packsList: [], editingPack: { name: '', pack_id: '', original_id: null, color: '#d4c217', levels: [] },
