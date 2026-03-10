@@ -78,7 +78,7 @@ export default {
     <div class="meta">
      <div style="margin-bottom: 20px;">
       <button onclick="window.location.href='/#/upcoming'" class="btn-goto-admin" style="background: var(--color-primary-light); border: 2px solid var(--color-primary); color: white; width: 100%; font-family: 'Lexend Deca', sans-serif; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: 700; text-transform: uppercase;">
-       ✨ VIEW UPCOMING LEVELS
+       View Upcoming Levels
       </button>
      </div>
      <h3>List Editors</h3>
@@ -93,42 +93,43 @@ export default {
   </main>
  `,
  data: () => ({ list: [], editors: [], loading: true, selectedId: null, searchQuery: "", store, roleIconMap }),
- computed: {
-  filteredList() {
-   if (!this.list || this.list.length === 0) return [];
-   const mode = store.listMode || 'main';
-   let mapped = this.list
-    .map(l => l[0])
-    .filter(l => l && (l.type || 'main') === mode);
+  computed: {
+    filteredList() {
+      if (!this.list || this.list.length === 0) return [];
+      const mode = store.listMode || 'main';
+      
+      // 1. Сначала фильтруем уровни по типу (main или challenge)
+      let mapped = this.list
+        .map(l => l[0])
+        .filter(l => l && (l.type || 'main') === mode);
 
-   if (this.searchQuery) {
-    const q = this.searchQuery.toLowerCase();
-    mapped = mapped.filter(l => l.name.toLowerCase().includes(q));
-   }
-   return mapped.map((level, index) => ({ level, rank: index + 1 }));
+      // 2. Если есть поиск, фильтруем по названию
+      if (this.searchQuery) {
+        const q = this.searchQuery.toLowerCase();
+        mapped = mapped.filter(l => l.name.toLowerCase().includes(q));
+      }
+      
+      // 3. САМОЕ ВАЖНОЕ: Присваиваем ранг (rank) на основе позиции в ЭТОМ списке.
+      // Теперь демон #1 и челлендж #1 — это оба ТОП-1 в своих вкладках.
+      return mapped.map((level, index) => ({ level, rank: index + 1 }));
+    },
+    level() {
+      if (this.filteredList.length === 0) return null;
+      const found = this.filteredList.find(i => i.level._id === this.selectedId);
+      // Если выбранный ID не найден в текущем списке (например, при переключении вкладок),
+      // берем самый первый уровень из этого списка
+      return found ? found.level : this.filteredList[0].level;
+    },
+    currentRankPoints() {
+      // Ищем текущий уровень в отфильтрованном списке, чтобы узнать его локальный ранг
+      const item = this.filteredList.find(i => i.level._id === this.selectedId) || this.filteredList[0];
+      // Считаем поинты на основе его позиции (1, 2, 3...) именно в этой вкладке
+      return item ? score(item.rank, 100, item.level.percentToQualify) : 0;
+    },
+    video() { 
+      return this.level ? embed(this.level.verification) : ''; 
+    }
   },
-  level() {
-   if (this.filteredList.length === 0) return null;
-   const found = this.filteredList.find(i => i.level._id === this.selectedId);
-   return found ? found.level : this.filteredList[0].level;
-  },
-  currentRankPoints() {
-   const item = this.filteredList.find(i => i.level._id === this.selectedId) || this.filteredList[0];
-   return item ? score(item.rank, 100, item.level.percentToQualify) : 0;
-  },
-  video() { return this.level ? embed(this.level.verification) : ''; }
- },
- async mounted() {
-  store.listMode = 'main'; // Всегда открываем DDL первым
-  const listData = await fetchList();
-  this.list = listData || [];
-  this.editors = await fetchEditors() || [];
-  
-  if (this.filteredList.length > 0) {
-   this.selectedId = this.filteredList[0].level._id;
-  }
-  this.loading = false;
- },
  methods: {
   embed, score,
   changeMode(mode) {
