@@ -16,14 +16,18 @@ export default {
     <main v-else class="page-list">
       <div class="list-container">
         <div class="list-header" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; padding: 0 10px;">
-          <!-- Исправленный переключатель с нужным шрифтом -->
+          <!-- Переключатель DDL/DCL с правильным шрифтом -->
           <div style="display: flex; background: var(--color-primary-light); border-radius: 8px; border: 1px solid var(--color-border); overflow: hidden; width: 100%;">
             <button @click="changeMode('main')" 
-              :style="store.listMode === 'main' ? 'background: var(--color-primary); color: white;' : ''"
-              style="flex: 1; padding: 10px; border: none; cursor: pointer; font-family: 'Lexend Deca', sans-serif; font-weight: 700; text-transform: uppercase; transition: 0.2s;">DDL</button>
+              :style="store.listMode === 'main' ? 'background: var(--color-primary); color: white;' : 'background: transparent; color: #999;'"
+              style="flex: 1; padding: 12px; border: none; cursor: pointer; font-family: 'Lexend Deca', sans-serif; font-weight: 700; text-transform: uppercase; transition: 0.2s; font-size: 0.9rem;">
+              DDL
+            </button>
             <button @click="changeMode('challenge')" 
-              :style="store.listMode === 'challenge' ? 'background: var(--color-primary); color: white;' : ''"
-              style="flex: 1; padding: 10px; border: none; cursor: pointer; font-family: 'Lexend Deca', sans-serif; font-weight: 700; text-transform: uppercase; transition: 0.2s;">DCL</button>
+              :style="store.listMode === 'challenge' ? 'background: var(--color-primary); color: white;' : 'background: transparent; color: #999;'"
+              style="flex: 1; padding: 12px; border: none; cursor: pointer; font-family: 'Lexend Deca', sans-serif; font-weight: 700; text-transform: uppercase; transition: 0.2s; font-size: 0.9rem;">
+              DCL
+            </button>
           </div>
           <input v-model="searchQuery" type="text" placeholder="Search levels..." class="search-input" style="width: 100%;" />
         </div>
@@ -33,7 +37,7 @@ export default {
             <td class="rank">
               <p class="type-label-lg">
                 <span :class="i + 1 <= 150 ? 'goldhighlight' : ''"
-                   :style="i + 1 > 150 ? 'color: var(--color-text-legacy)' : ''">
+                  :style="i + 1 > 150 ? 'color: var(--color-text-legacy)' : ''">
                   #{{ i + 1 }}
                 </span>
               </p>
@@ -68,19 +72,22 @@ export default {
             </tr>
           </table>
         </div>
+        <div v-else class="level" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+          <p style="opacity: 0.5;">Select a level from the list</p>
+        </div>
       </div>
 
       <div class="meta-container">
         <div class="meta">
           <div style="margin-bottom: 20px;">
-            <button onclick="window.location.href='/#/upcoming'" class="btn-goto-admin" style="background: var(--color-primary-light); border: 2px solid var(--color-primary); color: white; width: 100%; font-family: 'Lexend Deca', sans-serif;">
+            <button onclick="window.location.href='/#/upcoming'" class="btn-goto-admin" style="background: var(--color-primary-light); border: 2px solid var(--color-primary); color: white; width: 100%; font-family: 'Lexend Deca', sans-serif; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: 700;">
               ✨ VIEW UPCOMING LEVELS
             </button>
           </div>
           <h3>List Editors</h3>
           <ol class="editors">
             <li v-for="editor in editors">
-              <img :src="\`/assets/\${roleIconMap[editor.role]}-dark.svg\`">
+              <img :src="\`/assets/\${roleIconMap[editor.role]}-dark.svg\`" style="height: 1.25rem;">
               <p class="type-label-lg">{{ editor.name }}</p>
             </li>
           </ol>
@@ -88,7 +95,15 @@ export default {
       </div>
     </main>
   `,
-  data: () => ({ list: [], editors: [], rules: null, loading: true, selectedId: null, searchQuery: "", store, roleIconMap }),
+  data: () => ({ 
+    list: [], 
+    editors: [], 
+    loading: true, 
+    selectedId: null, 
+    searchQuery: "", 
+    store, 
+    roleIconMap 
+  }),
   computed: {
     filteredList() {
       if (!this.list) return [];
@@ -101,34 +116,45 @@ export default {
         const q = this.searchQuery.toLowerCase();
         mapped = mapped.filter(l => l.name.toLowerCase().includes(q));
       }
+      // Ранг теперь считается строго внутри отфильтрованного списка
       return mapped.map((level, index) => ({ level, rank: index + 1 }));
     },
     level() {
-      return this.filteredList.find(i => i.level._id === this.selectedId)?.level || this.filteredList[0]?.level;
+      const found = this.filteredList.find(i => i.level._id === this.selectedId);
+      return found ? found.level : (this.filteredList[0] ? this.filteredList[0].level : null);
     },
     currentRankPoints() {
       const item = this.filteredList.find(i => i.level._id === this.selectedId) || this.filteredList[0];
       return item ? score(item.rank, 100, item.level.percentToQualify) : 0;
     },
-    video() { return this.level ? embed(this.level.verification) : ''; }
+    video() { 
+      return this.level ? embed(this.level.verification) : ''; 
+    }
   },
   async mounted() {
+    // Устанавливаем режим DDL по умолчанию при входе
+    store.listMode = 'main';
     const listData = await fetchList();
     this.list = listData;
     this.editors = await fetchEditors();
-    // Устанавливаем первый уровень из отфильтрованного списка
-    this.$nextTick(() => {
-      if (this.filteredList.length > 0) this.selectedId = this.filteredList[0].level._id;
-    });
+    
+    // Авто-выбор первого уровня
+    if (this.filteredList.length > 0) {
+      this.selectedId = this.filteredList[0].level._id;
+    }
+    
     this.loading = false;
   },
   methods: {
-    embed, score,
+    embed, 
+    score,
     changeMode(mode) {
       store.listMode = mode;
       this.searchQuery = "";
-      // Сбрасываем выбор на первый уровень нового списка
-      if (this.filteredList.length > 0) this.selectedId = this.filteredList[0].level._id;
+      // Сброс выбора на первый уровень при переключении вкладок
+      if (this.filteredList.length > 0) {
+        this.selectedId = this.filteredList[0].level._id;
+      }
     }
   }
 };
