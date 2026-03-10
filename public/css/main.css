@@ -138,6 +138,32 @@ input[type="checkbox"] {
     position: relative;
 }
 
+/* Стили для правил с красными точками */
+.custom-rules-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.custom-rules-list li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  color: var(--color-on-background);
+  font-weight: 500; /* Обычный вес, не жирный */
+  opacity: 0.9;
+}
+
+.custom-rules-list li::before {
+  content: "•";
+  color: #ff0000; /* Чисто красный цвет для точек */
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 .rule-text strong {
     color: var(--color-text-highlight);
 }
