@@ -44,8 +44,8 @@ export default {
             <div class="form-group">
               <label>List Type</label>
               <select v-model="formData.type" class="search-input" style="width:100%; background:#000; color:#fff; border:1px solid #333; padding:8px;">
-                <option value="main">DDL (Main List)</option>
-                <option value="challenge">DCL (Challenge)</option>
+                <option value="main">SKCDL (Demon)</option>
+                <option value="challenge">SKCCL (Challenge)</option>
                 <option value="upcoming">Upcoming Level</option>
               </select>
             </div>
@@ -160,8 +160,8 @@ export default {
               <div>
                 <label>List Type</label>
                 <select v-model="editingLevel.type" class="search-input" style="width:100%; background:#000; color:#fff; border:1px solid #333; padding:8px;">
-                  <option value="main">DDL (Main List)</option>
-                  <option value="challenge">DCL (Challenge)</option>
+                  <option value="main">SKCDL (Demon)</option>
+                  <option value="challenge">SKCCL (Challenge)</option>
                   <option value="upcoming">Upcoming Level</option>
                 </select>
               </div>
