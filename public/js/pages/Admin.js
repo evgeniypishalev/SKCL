@@ -51,12 +51,20 @@ export default {
             </div>
 
             <!-- ПОЛЯ ДЛЯ UPCOMING -->
-            <div v-if="formData.type === 'upcoming'" style="background: rgba(139,0,0,0.1); padding: 10px; border-radius: 8px; border: 1px dashed var(--color-primary); margin-bottom: 10px;">
-              <div class="form-group"><label>Status</label><input v-model="formData.status" placeholder="Finished / Verifying..." /></div>
-              <div class="form-group"><label>Best Record (%)</label><input v-model.number="formData.best_record.percent" type="number" /></div>
-              <div class="form-group"><label>Record Player</label><input v-model="formData.best_record.player" /></div>
-              <div class="form-group"><label>Note</label><textarea v-model="formData.note" placeholder="This level is unreleased..." style="min-height:60px;"></textarea></div>
-            </div>
+			<div v-if="formData.type === 'upcoming'" style="background: rgba(139,0,0,0.1); padding: 15px; border-radius: 8px; border: 1px dashed var(--color-primary); margin-bottom: 10px;">
+			 <div class="form-group">
+			  <label>Upcoming Status</label>
+			  <input v-model="formData.status" placeholder="Finished / Verifying / Unreleased" />
+			 </div>
+ 			<div class="form-group">
+			  <label>Best Record Display Text</label>
+			  <input v-model="formData.best_record_text" placeholder="e.g. 98% by Cursed" />
+			 </div>
+			 <div class="form-group">
+			  <label>Custom Note</label>
+			  <textarea v-model="formData.note" placeholder="Any additional info..." style="min-height:60px;"></textarea>
+			 </div>
+			</div>
 
             <div class="form-group"><label>ID</label><input v-model.number="formData.id" type="number" required /></div>
             <div class="form-group"><label>Author</label><input v-model="formData.author" type="text" placeholder="Name, Name2..." required /></div>
