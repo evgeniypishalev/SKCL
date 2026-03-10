@@ -53,18 +53,18 @@ export default {
   <div class="level-container">
   <div class="level" v-if="level">
    <h1>{{ level.name }}</h1>
-   <LevelAuthors :author="level.author" :creators="level.creators" :verifier="level.verifier"></LevelAuthors>
+   <LevelAuthors :author="level.author" :creators="level.creators || []" :verifier="level.verifier"></LevelAuthors>
    <p class="warning-lable">WARNING! Levels AND videos may be epileptic</p>
    <iframe class="video" id="videoframe" :src="video" frameborder="0" allowfullscreen></iframe>
    <ul class="stats">
    <li><div class="type-title-sm">Points</div><p>{{ currentRankPoints }}</p></li>
-   <li><div class="type-title-sm">ID</div><p>{{ level.id <tg-spoiler> 'N/A' }}</p></li>
-   <li><div class="type-title-sm">FPS</div><p>{{ level.hz </tg-spoiler> 'Any' }}</p></li>
+   <li><div class="type-title-sm">ID</div><p>{{ level.id || 'N/A' }}</p></li>
+   <li><div class="type-title-sm">FPS</div><p>{{ level.hz || 'Any' }}</p></li>
    </ul>
    <h2>Records</h2>
    <p><strong>{{ level.percentToQualify }}%</strong> or better to qualify</p>
    <table class="records">
-   <tr v-for="record in level.records" class="record">
+   <tr v-for="record in (level.records || [])" class="record">
     <td class="percent"><p>{{ record.percent }}%</p></td>
     <td class="user"><a :href="record.link" target="_blank" class="type-label-lg">{{ record.user }}</a></td>
     <td class="FPS"><p>{{ record.hz }}Hz</p></td>
@@ -72,7 +72,7 @@ export default {
    </table>
   </div>
   <div v-else class="level" style="height: 100%; display: flex; justify-content: center; align-items: center;">
-    <p style="opacity: 0.5;">No levels found in this category.</p>
+    <p style="opacity: 0.5;">Select a level from the list</p>
   </div>
   </div>
 
@@ -86,7 +86,7 @@ export default {
    <h3>List Editors</h3>
    <ol class="editors">
    <li v-for="editor in editors">
-    <img :src="\`/assets/\${roleIconMap[editor.role]}-dark.svg\`" style="height: 1.25rem;">
+    <img :src="\`/assets/\${roleIconMap[editor.role] || 'user-gear'}-dark.svg\`" style="height: 1.25rem;">
     <p class="type-label-lg">{{ editor.name }}</p>
    </li>
    </ol>
@@ -96,52 +96,49 @@ export default {
  `,
  data: () => ({ list: [], editors: [], loading: true, selectedId: null, searchQuery: "", store, roleIconMap }),
  computed: {
-  filteredList() {
-   if (!this.list || this.list.length === 0) return [];
-   const mode = store.listMode || 'main';
-   let mapped = this.list
-    .map(l => l[0])
-    .filter(l => l && (l.type || 'main') === mode);
+ filteredList() {
+  if (!this.list || this.list.length === 0) return [];
+  const mode = store.listMode || 'main';
+  let mapped = this.list
+  .map(l => l[0])
+  .filter(l => l && (l.type || 'main') === mode);
 
-   if (this.searchQuery) {
-    const q = this.searchQuery.toLowerCase();
-    mapped = mapped.filter(l => l.name.toLowerCase().includes(q));
-   }
-   return mapped.map((level, index) => ({ level, rank: index + 1 }));
-  },
-  level() {
-   if (this.filteredList.length === 0) return null;
-   const found = this.filteredList.find(i => i.level._id === this.selectedId);
-   return found ? found.level : this.filteredList[0].level;
-  },
-  currentRankPoints() {
-   if (this.filteredList.length === 0) return 0;
-   const item = this.filteredList.find(i => i.level._id === this.selectedId) || this.filteredList[0];
-   return item ? score(item.rank, 100, item.level.percentToQualify) : 0;
-  },
-  video() {
-   return this.level ? embed(this.level.verification) : '';
+  if (this.searchQuery) {
+  const q = this.searchQuery.toLowerCase();
+  mapped = mapped.filter(l => l.name.toLowerCase().includes(q));
   }
+  return mapped.map((level, index) => ({ level, rank: index + 1 }));
+ },
+ level() {
+  if (!this.filteredList || this.filteredList.length === 0) return null;
+  const found = this.filteredList.find(i => i.level._id === this.selectedId);
+  return found ? found.level : this.filteredList[0].level;
+ },
+ currentRankPoints() {
+  if (!this.filteredList || this.filteredList.length === 0) return 0;
+  const item = this.filteredList.find(i => i.level._id === this.selectedId) || this.filteredList[0];
+  if (!item || !item.level) return 0;
+  return score(item.rank, 100, item.level.percentToQualify || 100);
+ },
+ video() { return this.level ? embed(this.level.verification) : ''; }
  },
  async mounted() {
-  this.loading = true;
-  const listData = await fetchList();
-  this.list = listData || [];
-  this.editors = await fetchEditors() || [];
-  
-  if (this.filteredList.length > 0) {
-   this.selectedId = this.filteredList[0].level._id;
-  }
-  this.loading = false;
+ const listData = await fetchList();
+ this.list = listData || [];
+ this.editors = await fetchEditors() || [];
+ if (this.filteredList.length > 0) {
+  this.selectedId = this.filteredList[0].level._id;
+ }
+ this.loading = false;
  },
  methods: {
-  embed, score,
-  changeMode(mode) {
-   store.listMode = mode;
-   this.searchQuery = "";
-   if (this.filteredList.length > 0) {
-    this.selectedId = this.filteredList[0].level._id;
-   }
+ embed, score,
+ changeMode(mode) {
+  store.listMode = mode;
+  this.searchQuery = "";
+  if (this.filteredList.length > 0) {
+  this.selectedId = this.filteredList[0].level._id;
   }
+ }
  }
 };
